@@ -24,9 +24,20 @@ connectDatabase();
 
 // Middleware
 app.use(helmet());
+const allowedOrigins = [
+    process.env.FRONTEND_LOCAL_URL,      
+    process.env.FRONTEND_DEV_URL  
+];
 app.use(cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-    credentials: true
+     origin: function(origin, callback) {
+        if (!origin) return callback(null, true); 
+        if (allowedOrigins.includes(origin)) {
+            return callback(null, true);
+        } else {
+            return callback(new Error('CORS policy not allowed'), false);
+        }
+    },
+        credentials: true
 }));
 app.use(compression());
 app.use(morgan('dev'));
