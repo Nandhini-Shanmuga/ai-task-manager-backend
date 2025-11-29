@@ -60,6 +60,7 @@ cp .env-sample .env
 To start the project after the Babel transpilation, use the following command:
 
 npm start
+
 The application will start, and you can access it by navigating to http://localhost:your_port in your browser, with your_port being the port specified in your environment variables.
 
 
