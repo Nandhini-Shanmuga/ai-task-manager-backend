@@ -52,8 +52,11 @@ class TaskController {
   // Get All Tasks details
  static async getAllTasks(req, res, next) {
   try {
-    const { status, priority, sortBy, order, search } = req.query;
-    
+    const { status, priority, sortBy, order, search,page = 1,limit = 10 } = req.query;
+     // Convert page & limit to numbers
+    const pageNumber = parseInt(page, 10);
+    const limitNumber = parseInt(limit, 10);
+
     // Build query
     const query = { user: req.user._id };
 
@@ -71,13 +74,33 @@ class TaskController {
 
     // Build sort
     const sortOption = sortBy ? { [sortBy]: order === 'desc' ? -1 : 1 } : { createdAt: -1 };
+     // Pagination
+    const skip = (pageNumber - 1) * limitNumber;
 
-    const tasks = await Task.find(query).sort(sortOption);
+    // Fetch paginated tasks
+    const docs = await Task.find(query)
+      .sort(sortOption)
+      .skip(skip)
+      .limit(limitNumber);
+
+    // Count total documents
+    const totalDocs = await Task.countDocuments(query);
+    const totalPages = Math.ceil(totalDocs / limitNumber);
+    const pagingCounter = skip + 1;
 
     res.json({
       success: true,
-      count: tasks.length,
-      data: tasks
+      data:{
+        docs,
+        totalDocs,
+        totalPages,
+        page: pageNumber,
+        limit: limitNumber,
+        hasNextPage: pageNumber < totalPages,
+        hasPrevPage: pageNumber > 1,
+        pagingCounter
+      }
+     
     });
   } catch (error) {
     next(error);
