@@ -1,5 +1,5 @@
+require('dotenv').config();
 const express = require('express');
-const dotenv = require('dotenv');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
@@ -8,8 +8,7 @@ const { connectDatabase } = require('./config/db');
 const { errorHandler } = require('./middleware/errorHandler');
 const { rateLimiter } = require('./middleware/rateLimiter');
 
-// Load env vars
-dotenv.config();
+
 
 // Route files
 const authRoutes = require('./routes/authRoutes');
@@ -32,6 +31,7 @@ app.use(cors({
   ],
   credentials: true
 }));
+console.log("MONGO_URI:", process.env.MONGODB_URI);
 
 app.use(compression());
 app.use(morgan('dev'));
