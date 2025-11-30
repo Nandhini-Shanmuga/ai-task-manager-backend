@@ -140,7 +140,11 @@
       });
     }
 
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ email }).
+    select('_id')
+      .lean()
+      .maxTimeMS(5000)   // hard timeout after 5 seconds
+      .exec();
 
     if (existingUser) {
       return res.json({
@@ -149,7 +153,12 @@
         message: "Email already exists"
       });
     }
-
+     // Email is available 
+    return res.json({
+      success: true,
+      exists: false
+      
+    });
  
 
   } catch (error) {

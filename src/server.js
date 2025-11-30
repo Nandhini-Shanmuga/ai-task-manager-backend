@@ -37,6 +37,23 @@ app.use(compression());
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+// Prevent hanging requests forever
+app.use((req, res, next) => {
+  const timeout = setTimeout(() => {
+    if (!res.headersSent) {
+      res.status(408).json({
+        success: false,
+        message: "Request timeout"
+      });
+    }
+  }, 10000);
+
+  res.on('finish', () => clearTimeout(timeout));
+  res.on('close', () => clearTimeout(timeout));
+  next();
+});
+
+
 
 // Rate limiting
 app.use('/api/', rateLimiter);
