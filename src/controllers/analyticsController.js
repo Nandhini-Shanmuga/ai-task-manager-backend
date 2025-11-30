@@ -25,7 +25,13 @@ class AnalyticsController {
         medium: allTasks.filter(t => t.priority === 'medium').length,
         low: allTasks.filter(t => t.priority === 'low').length
       };
-
+       //  AI Suggested Priority 
+       const aiSuggestedBreakdown = {
+      urgent: allTasks.filter(t => t.aiInsights?.suggestedPriority === 'urgent').length,
+      high: allTasks.filter(t => t.aiInsights?.suggestedPriority === 'high').length,
+      medium: allTasks.filter(t => t.aiInsights?.suggestedPriority === 'medium').length,
+      low: allTasks.filter(t => t.aiInsights?.suggestedPriority === 'low').length
+    };
       // Overdue tasks
       const now = new Date();
       const overdueTasks = allTasks.filter(t => 
@@ -59,6 +65,7 @@ class AnalyticsController {
             todoTasks,
             overdueTasks,
             dueSoonTasks,
+            aiSuggestedBreakdown,
             completionRate: parseFloat(completionRate)
           },
           priorityBreakdown,
