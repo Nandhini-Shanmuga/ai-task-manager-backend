@@ -59,3 +59,4 @@ TaskSchema.index({ user: 1, priority: 1 });
 TaskSchema.index({ user: 1, dueDate: 1 });
 
 module.exports = mongoose.model('Task', TaskSchema);
+
